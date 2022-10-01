@@ -53,6 +53,25 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'minimarket.urls'
 
 TEMPLATES = [
+{
+        'BACKEND': 'django.template.backends.jinja2.Jinja2',
+        'DIRS': [BASE_DIR / 'templates'],
+        'APP_DIRS': True,
+        'OPTIONS': {
+            'environment': 'minimarket.jinja2.environment',
+            'context_processors': [
+                'django.template.context_processors.debug',
+                'django.template.context_processors.request',
+                'django.contrib.auth.context_processors.auth',
+                'django.contrib.messages.context_processors.messages',
+                # 'products.context_processors.main_menu_categories',
+                # 'promotions.context_processors.promotion_service',
+                # 'products.context_processors.getting_compare_info',
+                'django.template.context_processors.i18n',
+                # 'basket.context_processors.basket'
+            ],
+        },
+    },
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [],

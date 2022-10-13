@@ -52,41 +52,26 @@
                 {% endif %}
               </div>
               <div  class="Cart-block Cart-block_price">
-                {% set prices = item.shop_product.get_prices_with_promotion(promotion_service) %}
-
-                {% if prices.new_price %}
                   <span id="product-discount-subotal{{ product.id }}" class="Card-priceOld">
-                    {{ prices.old_price * item.qty }} &#8381;
+                    {{ item.total_cost}} &#8381;
                   </span>
-                  <span id="productsubotal{{ product.id }}" class="Cart-price">
-                    {{ prices.new_price * item.qty }} &#8381;
-                  </span>
-                {% else %}
-                  <span id="product-discount-subotal{{ product.id }}" class="Card-priceOld">
-                  </span>
-                  <span id="productsubotal{{ product.id }}" class="Cart-price">
-                    {{ prices.old_price * item.qty }} &#8381;
-                  </span>
-                {% endif %}
               </div>
             </div>
             <div class="Cart-block Cart-block_row">
-              <div class="Cart-block Cart-block_seller">
-                <!-- - var options = setOptions(items, ['value', 'selected', 'disabled']);-->
-                <select  class="form-select change_shop" id="select{{product.id}}" data-index="{{ product.id }}">
-                    {% for shop_product in product.shop_product.all() %}
-                  <option value="{{ shop_product.id }}"  {% if shop_product.id == item.shop_product.id%}selected="selected"{% endif %}>{{ shop_product.shop.name }}</option>
-                    {% endfor %}
-                </select>
-              </div>
+
               <div  class="Cart-block Cart-block_amount">
                 <div  class="Cart-amount">
                   <div class="Amount">
-                    <button class="Amount-remove add-button" type="button" value={{product.id}} data-index="{{ product.id }}" data-value={{ product.pk }} data-csrf="{{ csrf_token }}" data-shop="{{ item.shop_product.pk }}">
-                    </button>
-                    <input class="Amount-input form-input select{{ product.id }}" name="amount" type="text" value="{{ item.qty }}" readonly/>
-                    <button class="Amount-add add-button" type="button" value={{product.id}} data-index="{{ product.id }}"  data-value={{ product.pk }} data-csrf="{{ csrf_token }}" data-shop="{{ item.shop_product.pk }}">
-                    </button>
+                      <a class="Card-btn add-button add-button-pulse" data-product_id="{{ product.id }}" data-action="remove">
+<!--                        <input class="Amount-input form-input select{{ product.pk }}" name="amount" type="hidden">-->
+                        <img src="{{ static('assets/img/icons/card/cart.svg') }}" alt="cart.svg"/>
+                      </a>
+
+                      <a class="Card-btn add-button add-button-pulse" data-product_id="{{ product.id }}" data-action="add">
+<!--                        <input class="Amount-input form-input select{{ product.pk }}" name="amount" type="hidden">-->
+                        <img src="{{ static('assets/img/icons/card/cart.svg') }}" alt="cart.svg"/>
+                      </a>
+
                   </div>
                 </div>
               </div>
@@ -100,15 +85,10 @@
           <div class="Cart-total">
             <div  class="Cart-block Cart-block_total">
               <strong class="Cart-title">Итого:</strong>
-              {% set total_old_price = basket.total_old_price %}
-              {% set total_price = basket.total_price %}
 
-              {% if total_old_price %}
-                <span id="discount-subtotal" class="Cart-price_old">{{ total_old_price }} &#8381;</span>
-              {% endif %}
-              <span id="subtotal" class="Cart-price">{{ total_price }} &#8381;</span>
+              <span id="subtotal_1" class="Cart-price">{{ total_price }} &#8381;</span>
             </div>
-            <div class="Cart-block"><a class="btn btn_success btn_lg" href="{{ url('order-progress') }}">Оформить заказ</a>
+            <div class="Cart-block"><a class="btn btn_success btn_lg" href="#">Оформить заказ</a>
             </div>
           </div>
         </form>
@@ -118,128 +98,4 @@
       </div>
     </div>
   </div>
-
-<script>
-    function showEmptyBasket() {
-      $('form.form.Cart').remove()
-      $('.Section > .wrap').text('В корзине нет товаров.')
-    }
-
-    function showSubtotal(json) {
-      document.getElementById('h-subtotal').innerHTML = json.subtotal;
-      document.getElementById('subtotal').innerHTML = json.subtotal;
-      document.getElementById('basket-qty').innerHTML = json.qty
-
-      discountSubtotal = document.getElementById('discount-subtotal')
-      if (json.discount_subtotal !== null && json.discount_subtotal !== undefined) {
-        discountSubtotal.innerHTML = json.discount_subtotal
-      } else {
-        discountSubtotal.innerHTML = ''
-      }
-    }
-
-    function showProductSubtotal(json, prodid) {
-      productSubotal = document.getElementById('productsubotal'+prodid)
-      if (productSubotal !== null && productSubotal !== undefined) {
-        productSubotal.innerHTML = json.product_subtotal + '₽';
-      }
-
-      productDiscountSubotal = document.getElementById('product-discount-subotal'+prodid)
-      if (productDiscountSubotal !== null && productDiscountSubotal !== undefined) {
-        if (json.product_discount_subtotal !== null && json.product_discount_subtotal !== undefined) {
-          productDiscountSubotal.innerHTML = json.product_discount_subtotal + '₽';
-        } else {
-          productDiscountSubotal.innerHTML = '';
-        }
-      }
-    }
-
-    function showBasketSubtotal(json, prodid) {
-      showProductSubtotal(json, prodid)
-      showSubtotal(json)
-    }
-
-    $(document).on('click', '#delete-button', function (e) {
-        e.preventDefault();
-        var prodid = $(this).data('index');
-        $.ajax({
-            type: 'POST',
-            url: '{{ url('basket_delete') }}',
-            data: {
-                productid: $(this).data('index'),
-                csrfmiddlewaretoken: '{{csrf_token}}',
-                action: 'post'
-            },
-            success: function (json) {
-                $('.product-item[data-index=' + prodid + ']').remove();
-
-                if (json.subtotal <= 0) {
-                    showEmptyBasket()
-                    return
-                }
-
-                showSubtotal(json)
-            },
-            error: function (xhr, errmsg, err){}
-        });
-    })
-
-    $(document).on('click', '.add-button', function (e) {
-        e.preventDefault();
-        var prodid = $(this).data('index');
-        console.log($(prodid));
-        console.log($(document.getElementById('basket-qty').val));
-        $.ajax({
-            type: 'POST',
-            url: "{{ url('basket_add') }}",
-            data: {
-                product_id: $(this).val(),
-                product_qty: $('.select' + $(this).val()).val(),
-                csrfmiddlewaretoken: '{{csrf_token}}',
-                action: 'add',
-                shop_product_id: $('#select' + prodid + ' option:selected').val()
-            },
-            success: function (json) {
-                if (json.item_qty === 0) {
-                    $('.product-item[data-index=' + prodid + ']').remove();
-                }
-
-                if (json.subtotal <= 0) {
-                    showEmptyBasket()
-                    return
-                }
-
-                showBasketSubtotal(json, prodid)
-            },
-            error: function (xhr, errmsg, err) {
-            }
-        });
-    })
-
-        $(document).on('change', '.change_shop', function (e) {
-        e.preventDefault();
-        var prodid = $(this).data('index');
-        console.log($(document.getElementById('basket-qty').val));
-        $.ajax({
-            type: 'POST',
-            url: "{{ url('basket_add') }}",
-            data: {
-                shop_product_id: $(this).val(),
-                csrfmiddlewaretoken: '{{csrf_token}}',
-                action: 'change_shop',
-            },
-            success: function (json) {
-                if (json.item_qty === 0) {
-                    $('.product-item[data-index=' + prodid + ']').remove();
-                }
-
-                showBasketSubtotal(json, prodid)
-            },
-            error: function (xhr, errmsg, err) {
-            }
-        });
-    })
-
-</script>
-
 {% endblock %}

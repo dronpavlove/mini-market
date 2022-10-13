@@ -50,104 +50,107 @@ $(document).ready(function (){
 
 
 
-  if (btn) {
-    btn.click(function (e) {
-       e.preventDefault()
-         // логика добавления в корзину после нажатия кнопки в истории просмотров _ показать еще
-      setTimeout(function () {
-        btn_card = $('#add-button, .add-button')
-        btn_compare = $('#add-compare, .add-compare')
-        all_add_button = $('.add-button')
-        btn_card_pulse = $('.add-button.add-button-pulse')
+//  if (btn) {
+//    btn.click(function (e) {
+//       e.preventDefault()
+//         // логика добавления в корзину после нажатия кнопки в истории просмотров _ показать еще
+//      setTimeout(function () {
+//        btn_card = $('#add-button, .add-button')
+//        btn_compare = $('#add-compare, .add-compare')
+//        all_add_button = $('.add-button')
+//        btn_card_pulse = $('.add-button.add-button-pulse')
+//
+//        color_button()
+//        compare()
 
-        color_button()
-        compare()
-
-        all_add_button.click(function (e) {
-        e.preventDefault();
-        var prodid = $(this).attr('data-value');
-        var shop_prod_id = $(this).attr('data-shop');
-        var product_qty_value =  $('.select' + shop_prod_id).val()
-        if (product_qty_value === 'undefined' || product_qty_value == null){
-          product_qty_value = 1
-        }
-          $.ajax({
-              type: 'POST',
-              url: url_path,
-              data: {
-                  product_id: prodid,
-                  product_qty: product_qty_value,
-                  shop_product_id: shop_prod_id,
-                  csrfmiddlewaretoken: crsf,
-                  action: 'add'
-              },
-              success: function (json) {
-                  document.getElementById('basket-qty').innerHTML = json.qty;
-                  document.getElementById('h-subtotal').innerHTML = json.subtotal;
-                  // document.getElementById('subtotal').innerHTML = json.subtotal;
-
-              },
-              error: function (xhr, errmsg, err) {
-              }
-          });
-        })
-        }, 1000);
-      })
-  }
-
-
-        add_button.click(function (e) {
-        e.preventDefault();
-        $.ajax({
-            type: 'POST',
-            url: url_path,
-            data: {
-                product_id: $('#add-button').val(),
-                product_qty: $('#select').val(),
-                csrfmiddlewaretoken: add_button.attr('data-csrf'),
-                action: 'add'
-            },
-            success: function (json) {
-                document.getElementById('basket-qty').innerHTML = json.qty;
-                document.getElementById('h-subtotal').innerHTML = json.subtotal;
-                // document.getElementById('subtotal').innerHTML = json.subtotal;
-            },
-            error: function (xhr, errmsg, err) {
-            }
-        });
-    })
-
+//        all_add_button.click(function (e) {
+//        e.preventDefault();
+//        var prodid = $(this).attr('data-value');
+//        var shop_prod_id = $(this).attr('data-shop');
+//        var product_qty_value =  $('.select' + shop_prod_id).val()
+//        if (product_qty_value === 'undefined' || product_qty_value == null){
+//          product_qty_value = 1
+//        }
+//          $.ajax({
+//              type: 'POST',
+//              url: url_path,
+//              data: {
+//                  product_id: prodid,
+//                  product_qty: product_qty_value,
+//                  shop_product_id: shop_prod_id,
+//                  csrfmiddlewaretoken: crsf,
+//                  action: 'add'
+//              },
+//              success: function (json) {
+//                  document.getElementById('basket-qty').innerHTML = json.qty;
+//                  document.getElementById('h-subtotal').innerHTML = json.subtotal;
+//                  // document.getElementById('subtotal').innerHTML = json.subtotal;
+//
+//              },
+//              error: function (xhr, errmsg, err) {
+//              }
+//          });
+//        })
+//        }, 1000);
+//      })
+//  }
+//
+//
+//        add_button.click(function (e) {
+//        e.preventDefault();
+//        $.ajax({
+//            type: 'POST',
+//            url: url_path,
+//            data: {
+//                product_id: $('#add-button').val(),
+//                product_qty: $('#select').val(),
+//                csrfmiddlewaretoken: add_button.attr('data-csrf'),
+//                action: 'add'
+//            },
+//            success: function (json) {
+//                document.getElementById('basket-qty').innerHTML = json.qty;
+//                document.getElementById('h-subtotal').innerHTML = json.subtotal;
+//                // document.getElementById('subtotal').innerHTML = json.subtotal;
+//            },
+//            error: function (xhr, errmsg, err) {
+//            }
+//        });
+//    })
+//
     all_add_button.click(function (e) {
         e.preventDefault();
-        var prodid = $(this).attr('data-value');
-        var shop_prod_id = $(this).attr('data-shop');
-        var product_qty_value =  $('.select' + shop_prod_id).val()
-        if (product_qty_value === 'undefined' || product_qty_value == null){
-          product_qty_value = 1
-        }
-      console.log(product_qty_value)
+        var product_id = $(this).data('product_id');
+        var action = $(this).data('action');
+      console.log('Пришло в ajax_add_product_in_basket.js: ', product_id, action)
 
         $.ajax({
-            type: 'POST',
+            type: 'GET',
             url: url_path,
             data: {
-                product_id: prodid,
-                // product_qty: product_qty_value === null || product_qty_value === undefined ? 1: product_qty_value.val(),
-                product_qty: product_qty_value,
-                shop_product_id: shop_prod_id,
-                csrfmiddlewaretoken: crsf !== null && crsf !== undefined ? crsf : $(this).attr('data-csrf'),
-                action: 'add'
+                product_id: product_id,
+                action: action
             },
+//            'product_amount', 'count_product_in_basket', 'full_sum'
             success: function (json) {
-                document.getElementById('basket-qty').innerHTML = json.qty;
-                document.getElementById('h-subtotal').innerHTML = json.subtotal;
-                // document.getElementById('subtotal').innerHTML = json.subtotal;
-            },
+                console.log('Всё прошло ок в добавлении/удалении в ajax_add_product_in_basket.js')
+                document.getElementById('basket_count_id').innerHTML = json.count_product_in_basket;
+                document.getElementById('subtotal').innerHTML = json.full_sum;
+                document.getElementById('subtotal_1').innerHTML = json.full_sum;
+                if (json.product_amount === 0) {
+                    $('.product-item[data-index=' + product_id + ']').remove();
+                    };
+                if (json.product_amount > 0) {
+                    $('.product-item[data-index=' + product_id + ']').innerHTML = json.product_amount;
+                    };
+                },
             error: function (xhr, errmsg, err) {
+                console.log('Ошибка в добавлении/удалении в ajax_add_product_in_basket.js');
             }
-        });
-    })
-
+            });
+        })
+//        });
+//      })
+//  }
    function compare(){
     $(".Card-change").click(function () {
         var productId = $(this).data('product');

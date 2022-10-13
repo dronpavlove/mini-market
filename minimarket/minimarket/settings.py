@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_celery_results',
     'products.apps.ProductsConfig',
+    'basket.apps.BasketConfig',
+    'accounts.apps.AccountsConfig'
 ]
 
 MIDDLEWARE = [
@@ -70,7 +72,7 @@ TEMPLATES = [
                 # 'promotions.context_processors.promotion_service',
                 'products.context_processors.getting_compare_info',
                 'django.template.context_processors.i18n',
-                # 'basket.context_processors.basket'
+                'basket.context_processors.basket_client_info'
             ],
         },
     },

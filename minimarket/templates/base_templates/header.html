@@ -97,12 +97,13 @@
                   <span class="CartBlock-amount" id="compare_count_id">
                     {{ count_product_compare }}
                   </span></a>
-              <a class="CartBlock-block" href="#"><img class="CartBlock-img" src="{{ static('assets/img/icons/cart.svg') }}" alt="cart.svg"/><span class="CartBlock-amount">
-
-          </span></a>
+              <a class="CartBlock-block" href="/basket/"><img class="CartBlock-img" src="{{ static('assets/img/icons/cart.svg') }}" alt="cart.svg"/>
+                  <span class="CartBlock-amount" id="basket_count_id">
+                    {{ count_product_in_basket }}
+                  </span></a>
             <div class="CartBlock-block">
-                <span id="h-subtotal" class="CartBlock-price"></span>
-                <span id="h-subtotal" class="CartBlock-price">₽</span>
+                <span id="subtotal" class="CartBlock-price">{{ full_sum }}</span>
+<!--                <span id="h-subtotal" class="CartBlock-price">₽</span>-->
             </div>
           </div>
         </div>

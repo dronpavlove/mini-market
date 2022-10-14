@@ -9,6 +9,7 @@ from products.models import Product
 def basket_add_remove_product(request):
     product_id = int(request.GET.get('product_id'))
     product_amount = 0
+    product_total_cost = 0
     try:
         update_data = {'client': request.user.client}
     except:
@@ -16,36 +17,34 @@ def basket_add_remove_product(request):
     basket = BasketClient.objects.filter(**update_data, product_id=product_id)
 
     if request.GET.get('action') == 'add':
-        print('Сюда +++++++++++++++++++++++++ пришло')
-        # qty = int(request.POST.get('product_qty'))
         if len(basket) != 0:
             product_in_basket = basket[0]
-            # product_amount = product_in_basket.product_amount + 1
-            # product_in_basket.product_amount = F('product_amount') + 1
             product_in_basket.product_amount += 1
-            # product_in_basket.save()
         else:
             product_in_basket = BasketClient(**update_data, product_id=product_id)
-            # product_amount = product_in_basket.product_amount
         product_amount = product_in_basket.product_amount
         product_in_basket.save()
+        product_total_cost = product_in_basket.total_cost
 
     elif request.GET.get('action') == 'remove':
-        print('Сюда --------------------- пришло')
         product_in_basket = basket[0]
-        # product_in_basket.product_amount = F('product_amount') - 1
         product_in_basket.product_amount -= 1
         product_amount = product_in_basket.product_amount
-        product_in_basket.save()
+
+        if product_amount == 0:
+            product_in_basket.delete()
+        else:
+            product_in_basket.save()
+            product_total_cost = product_in_basket.total_cost
 
     client_basket = BasketClient.objects.filter(**update_data)
     count_product_in_basket = sum([i.product_amount for i in client_basket])
     full_sum = sum([i.total_cost for i in client_basket])
-    print('RESPONSE ++++++++++', product_amount, count_product_in_basket, full_sum)
     response = JsonResponse({
         'product_amount': product_amount,
         'count_product_in_basket': count_product_in_basket,
         'full_sum': full_sum,
+        'product_total_cost': product_total_cost
     })
     return response
 
@@ -55,14 +54,20 @@ def basket_page(request):
 
 
 def basket_delete(request):
-    if request.POST.get('action') == 'post':
-        product_id = request.POST.get('productid')
-        basket_item = BasketClient.objects.get_item(request=request, product=product_id)
+    if request.GET.get('action') == 'delete':
+        product_id = request.GET.get('product_id')
+        try:
+            update_data = {'client': request.user.client}
+        except:
+            update_data = {'session': request.session.session_key}
+        basket_item = BasketClient.objects.get(**update_data, product=product_id)
         basket_item.delete()
-        client_basket = BasketClient.objects.smart_filter(request=request)
+
+        client_basket = BasketClient.objects.filter(**update_data)
+        count_product_in_basket = sum([i.product_amount for i in client_basket])
+        full_sum = sum([i.total_cost for i in client_basket])
         response = JsonResponse({
-            'qty': client_basket.total_count,
-            'subtotal': client_basket.total_price,
-            'discount_subtotal': client_basket.total_old_price,
+            'count_product_in_basket': count_product_in_basket,
+            'full_sum': full_sum,
         })
         return response

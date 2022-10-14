@@ -7,7 +7,7 @@
           <h1 class="Middle-title">Корзина
           </h1>
           <ul class="breadcrumbs Middle-breadcrumbs">
-            <li class="breadcrumbs-item"><a href="/">{{ _('домой') }}</a>
+            <li class="breadcrumbs-item"><a href="/products/">{{ _('домой') }}</a>
             </li>
             <li class="breadcrumbs-item breadcrumbs-item_current"><span>Корзина</span>
             </li>
@@ -52,8 +52,8 @@
                 {% endif %}
               </div>
               <div  class="Cart-block Cart-block_price">
-                  <span id="product-discount-subotal{{ product.id }}" class="Card-priceOld">
-                    {{ item.total_cost}} &#8381;
+                  <span class="Card-price">
+                    цена: {{ product.price }} &#8381;
                   </span>
               </div>
             </div>
@@ -63,19 +63,29 @@
                 <div  class="Cart-amount">
                   <div class="Amount">
                       <a class="Card-btn add-button add-button-pulse" data-product_id="{{ product.id }}" data-action="remove">
-<!--                        <input class="Amount-input form-input select{{ product.pk }}" name="amount" type="hidden">-->
-                        <img src="{{ static('assets/img/icons/card/cart.svg') }}" alt="cart.svg"/>
+                        <img src="{{ static('assets/img/icons/minus.png') }}" alt="cart.svg"/>
                       </a>
 
+                      <a class="Cart-title" id="product-count_product_in_basket{{ product.id }}">{{ item.product_amount }}</a>
+
                       <a class="Card-btn add-button add-button-pulse" data-product_id="{{ product.id }}" data-action="add">
-<!--                        <input class="Amount-input form-input select{{ product.pk }}" name="amount" type="hidden">-->
-                        <img src="{{ static('assets/img/icons/card/cart.svg') }}" alt="cart.svg"/>
+                        <img src="{{ static('assets/img/icons/plus.png') }}" alt="cart.svg"/>
                       </a>
 
                   </div>
                 </div>
               </div>
-              <div class="Cart-block Cart-block_delete"><a type="button" id="delete-button" class="Cart-delete" data-index="{{ product.id }}"><img src="/static/assets/img/icons/card/delete.svg" alt="delete.svg"/></a>
+
+                <div  class="Cart-block Cart-block_price">
+                  <span id="product-discount-subotal{{ product.id }}" class="Card-price">
+                  стоимость: {{ item.total_cost }}
+                  </span>
+                </div>
+
+              <div class="Cart-block Cart-block_delete" data-product_id="{{ product.id }}">
+                  <a type="button" id="delete-button" class="Cart-delete">
+                      <img src="/static/assets/img/icons/card/delete.svg" alt="delete.svg"/>
+                  </a>
               </div>
             </div>
           </div>
@@ -86,7 +96,7 @@
             <div  class="Cart-block Cart-block_total">
               <strong class="Cart-title">Итого:</strong>
 
-              <span id="subtotal_1" class="Cart-price">{{ total_price }} &#8381;</span>
+              <span id="subtotal_1" class="Cart-price">{{ full_sum }} &#8381;</span>
             </div>
             <div class="Cart-block"><a class="btn btn_success btn_lg" href="#">Оформить заказ</a>
             </div>

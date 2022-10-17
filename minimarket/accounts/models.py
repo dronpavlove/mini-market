@@ -90,4 +90,6 @@ class ClientProductView(models.Model):
     created_dt = models.DateField(auto_now_add=True, null=True)
 
     class Meta:
+        verbose_name = 'просмотренный товар'
+        verbose_name_plural = 'просмотренные товары'
         ordering = ("-created_dt",)

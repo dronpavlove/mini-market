@@ -11,7 +11,7 @@ def basket_client_info(request):
     if not session_key:
         request.session.cycle_key()
     try:
-        basket = BasketClient.objects.filter(client_user=request.user)
+        basket = BasketClient.objects.filter(client=request.user.client)
     except:
         basket = BasketClient.objects.filter(session=session_key)
     if len(basket) != 0:

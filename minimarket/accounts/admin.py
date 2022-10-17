@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.admin import TabularInline
 from django.utils.safestring import mark_safe
-from accounts.models import Client
+from accounts.models import Client, ClientProductView
 from django.utils.translation import gettext_lazy as _
 
 
@@ -29,3 +29,10 @@ class ClientAdmin(admin.ModelAdmin):
     #     if not obj.photo:
     #         return 'Нету фотографии'
     #     return mark_safe('<img src="{}" width="50" height="50" />'.format(obj.photo.url))
+
+
+@admin.register(ClientProductView)
+class ClientProductAdmin(admin.ModelAdmin):
+    list_display = ['id', 'client', 'product', 'created_dt']
+    list_filter = ['client']
+    list_display_links = ['client']

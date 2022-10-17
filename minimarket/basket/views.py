@@ -1,8 +1,10 @@
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.db.models import F
 
 from basket.models import BasketClient
+from accounts.models import Client
+from accounts.forms import RegistrationForm
 from products.models import Product
 
 
@@ -71,3 +73,18 @@ def basket_delete(request):
             'full_sum': full_sum,
         })
         return response
+
+
+def ordering(request):
+    if request.user.is_authenticated:
+        if Client.objects.filter(user=request.user).exists():
+            print('Есть такой клиент')
+            # return HttpResponse('Есть такой клиент')
+            return HttpResponseRedirect("/accounts/profile/")
+        else:
+            # form = RegistrationForm()
+            # return render(request, 'accounts/registration.html', {'form': form})
+            return HttpResponseRedirect("/accounts/profile/")
+
+    else:
+        return HttpResponseRedirect("/accounts/login/")

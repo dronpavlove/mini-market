@@ -16,6 +16,7 @@ from django.conf import settings
 # from promotions.utils.promo_filter import shop_product_filter, strategy_factory
 # from shops.models import ShopProduct
 # from utils.paginator import DisplayedPaginatedPagesMixin
+from accounts.models import ClientProductView
 from .filters import filterset_factory, CustomFilterSet, SearchProductFilter
 from .models import (Product, PropertyProduct, Category, Tag, UserReviews)
 from .services import get_full_data_product_compare, get_user_reviews, get_lazy_load_reviews, get_count_reviews
@@ -29,6 +30,12 @@ class ProductDetailView(DetailView):
 
     def get_context_data(self, **kwargs):
         """ Отдаёт содержание страницы при get запросе """
+        try:
+            client = ClientProductView(client=self.request.user.client,
+                                       product=self.object)  # .objects.get(client=self.request.user.client)
+            client.save()
+        except:
+            pass
         context = super().get_context_data(**kwargs)
         context['reviews'] = get_user_reviews(
             product=self.object,

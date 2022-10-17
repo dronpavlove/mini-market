@@ -79,6 +79,10 @@ class ProfileView(LoginRequiredMixin, ListView):
     redirect_field_name = None
 
     def get_queryset(self):
+        # if not Client.objects.filter(user=self.request.user).exists():
+        #     new_client = Client(user=self.request.user)
+        #     new_client.save()
+
         return Client.objects.select_related('user').prefetch_related('item_view').get(user=self.request.user)
 
     def get_context_data(self, **kwargs):
@@ -86,7 +90,8 @@ class ProfileView(LoginRequiredMixin, ListView):
         if cache.get(self.request.user.username + '_shop') or self.request.user.is_superuser:
             context['user_shop'] = 'yes'
         context['list_item_views'] = self.get_queryset().item_view.all().order_by('-client_products_views__id')[:3]
-        context['order_last'] = self.get_queryset().orders.first()
+        context['products'] = context['list_item_views']
+        # context['order_last'] = self.get_queryset().orders.first()
         return context
 
 
@@ -168,10 +173,6 @@ class LogView(LoginView):
         session_key = self.request.session.session_key
         user = form.get_user()
         login(self.request, user)
-        # user_shop_list = [i.shop for i in ShopUser.objects.prefetch_related('shop').filter(user=user)]
-        # if len(user_shop_list) != 0:
-        #     cache_key = user.username + '_shop'
-        #     cache.set(cache_key, user_shop_list, 3600)
         client_basket = BasketClient.objects.filter(
             client=self.request.user.client
         )

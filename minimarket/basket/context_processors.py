@@ -11,9 +11,13 @@ def basket_client_info(request):
     if not session_key:
         request.session.cycle_key()
     try:
-        basket = BasketClient.objects.filter(client=request.user.client)
+        basket = BasketClient.objects.select_related('product', 'client').filter(
+            client=request.user.client, flag_paid='n'
+        )
     except:
-        basket = BasketClient.objects.filter(session=session_key)
+        basket = BasketClient.objects.select_related('product').filter(
+            session=session_key, flag_paid='n'
+        )
     if len(basket) != 0:
         count_product_in_basket += sum([i.product_amount for i in basket])
         full_sum += sum([i.total_cost for i in basket])

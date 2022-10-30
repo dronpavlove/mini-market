@@ -62,7 +62,7 @@ class Client(SoftDeletes):
                                              blank=True,
                                              )
 
-    # orders = models.ManyToManyField('orders.Order', verbose_name=_('Заказы'), related_name='orders', blank=True)
+    # orders = models.ManyToManyField('Order', verbose_name=_('Заказы'), related_name='orders', blank=True)
 
     # Проверяем, не больше ли чем позволено
     def item_in_page_views_check(self):
@@ -93,3 +93,43 @@ class ClientProductView(models.Model):
         verbose_name = 'просмотренный товар'
         verbose_name_plural = 'просмотренные товары'
         ordering = ("-created_dt",)
+
+
+# class ClientOrder(models.Model):
+#     client = models.ForeignKey('Client', on_delete=models.CASCADE,
+#                                related_name='client_order',
+#                                related_query_name='client_orders')
+#     order = models.ForeignKey('Order', on_delete=models.CASCADE,
+#                               related_name='client_order',
+#                               related_query_name='client_orders')
+
+
+class Order(SoftDeletes):
+    """
+    Модель заказа товаров
+    """
+    CHOICES_DELIVERY = [('Обычная доставка', _('Обычная доставка')),
+                        ('Экспресс доставка', _('Экспресс доставка (+500 руб.)'))]
+
+    client = models.ForeignKey(Client, on_delete=models.CASCADE,
+                               related_name='client_order_view',
+                               related_query_name='client_order_views')
+    clients_check = models.FileField(_("чек"), upload_to='check/', null=True, blank=True)
+    created_dt = models.DateField(auto_now_add=True)
+    delivery = models.CharField(max_length=50, choices=CHOICES_DELIVERY, db_index=True, default='Обычная доставка',
+                                verbose_name=_('Способ доставки'))
+    status_pay = models.BooleanField(default=False, verbose_name=_('Статус оплаты'))
+    number_order = models.TextField('Номер заказа', blank=True, null=True)
+    delivery_price = models.DecimalField(verbose_name=_("цена доставки"),
+                                         max_digits=9,
+                                         decimal_places=2,
+                                         default=0)
+
+    def __str__(self):
+        return _('Заказ_№') + str(self.number_order)
+
+    class Meta:
+        verbose_name = _('заказ')
+        verbose_name_plural = _('заказы')
+        db_table = 'Orders'
+        ordering = ['-number_order']

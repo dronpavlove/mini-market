@@ -39,47 +39,33 @@
                 </div><a class="Account-editLink" href="{{ url('profile-edit', kwargs={'pk': request.user.pk }) }}">{{ _('Редактировать профиль') }}</a>
               </div>
             </div>
-          {%  if order_last %}
+              {%  if order_last %}<header class="Section-header">
+                <h2 class="Section-title">{{ _('История заказов') }}
+                </h2>
+              </header>
+            {% for order in order_last %}
             <div class="Account-group">
               <div class="Account-column Account-column_full">
                 <div class="Order Order_anons">
                     <div class="Order-personal">
                     <div class="row">
-                      <div class="row-block"><a class="Order-title" href="{{ url('order-detail', kwargs={'pk': order_last.pk }) }}">{{ _('Заказ') }}&#32;<span class="Order-numberOrder">№{{ order_last.number_order }}</span>&#32;{{ _('от') }}&#32;<span class="Order-dateOrder">{{ order_last.created_dt }}</span></a>
-                        <div class="Account-editLink"><a href="{{ url('orders') }}">{{ _('История заказов') }}</a></div>
+                      <div class="row-block"><a class="Order-title" href="{{ order.clients_check.url }}">{{ _('Заказ') }}&#32;<span class="Order-numberOrder">№{{ order.number_order }}</span>&#32;{{ _('от') }}&#32;<span class="Order-dateOrder">{{ order.created_dt }}</span></a>
                       </div>
                       <div class="row-block">
                         <div class="Order-info Order-info_delivery">
                             {# Тут тоже когда будет доп инфа #}
                           <div class="Order-infoType">{{ _('Тип доставки:') }}</div>
-                          <div class="Order-infoContent">{{ order_last.delivery }}</div>
+                          <div class="Order-infoContent">{{ order.delivery }}</div>
                         </div>
                         <div class="Order-info Order-info_pay">
                           <div class="Order-infoType">{{ _('Оплата:')}}</div>
-                          <div class="Order-infoContent">{{ order_last.payment }}</div>
+                          <div class="Order-infoContent">{{ order.status_pay }}</div>
                         </div>
-                        <div class="Order-info">
-                          <div class="Order-infoType">{{ _('Общая стоимость:') }}</div>
-                          <div class="Order-infoContent"> {{ order_last.total_price }} {{ _('руб.') }}</div>
-                        </div>
-                        <div class="Order-info Order-info_status">
-                          <div class="Order-infoType">{{ _('Статус:') }}</div>
-                          <div class="Order-infoContent">
-                              {% if order_last.status_pay %} {{ _('ОПЛАЧЕН') }}
-                              {% else %} {{ _('НЕ ОПЛАЧЕН') }}
-                              {% endif %}
-                          </div>
-                        </div>
-                        {% if order_last.error_pay %}
-                          <div class="Order-info Order-info_error">
-                            <div class="Order-infoType">{{ _('Оплата не прошла:') }}</div>
-                            <div class="Order-infoContent">{{ order_last.error_pay }}</div>
-                          </div>
-                        {% endif %}
+
                       </div>
                     </div>
                   </div>
-                </div>
+                </div>{% endfor %}
               </div>
             </div>
           {% else %}
@@ -141,8 +127,11 @@
               </div>
             </div>
           </div>
-            <div class="Account-editLink Account-editLink_view"><a href="{{ url('history_user', kwargs={'pk': client.pk }) }}">{{ _('Перейти на полный список') }}</a></div>
+
         </div>
+          <div class="Account-editLink Account-editLink_view">
+              <a href="{{ url('history_user', kwargs={'pk': client.pk }) }}">{{ _('Перейти на полный список') }}</a>
+          </div>
       </div>
     </div>
   </div>

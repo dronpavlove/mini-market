@@ -96,12 +96,20 @@ class ProfileEditForm(forms.ModelForm):
                                     attrs={'class': 'form-input', 'placeholder': _('Введите пароль повторно')}))
     id_user = forms.IntegerField(widget=forms.HiddenInput())
 
+    city = forms.CharField(required=True, widget=forms.TextInput(
+                                    attrs={'class': 'form-input', 'placeholder': _('апишем'), }))
+    street = forms.CharField(required=True, widget=wd3)
+    house_number = forms.IntegerField(required=True, widget=wd3)
+    apartment_number = forms.IntegerField(required=True, widget=wd3)
+    postcode = forms.IntegerField(required=True, widget=wd3)
+
     limit_items_views = forms.IntegerField(widget=wd2)
     item_in_page_views = forms.IntegerField(widget=wd2)
 
     class Meta:
         model = User
-        fields = ['email', 'password1', 'password2', 'photo', 'phone', 'patronymic', 'first_name', 'last_name']
+        fields = ['email', 'password1', 'password2', 'photo', 'phone', 'patronymic', 'first_name', 'last_name',
+                  'city', 'street', 'house_number', 'apartment_number', 'postcode']
         widgets = {'email': TextInput(attrs={
             'class': 'form-input',
             'placeholder': _('Данных нет'),
@@ -116,6 +124,12 @@ class ProfileEditForm(forms.ModelForm):
             'last_name': TextInput(attrs={
                 'class': 'form-input',
                 'placeholder': _('Данных нет'),
+                'required': True,
+                'data-validate': 'require',
+            }),
+            'street': TextInput(attrs={
+                'class': 'form-input',
+                'placeholder': 'Данных dfot нет',
                 'required': True,
                 'data-validate': 'require',
             }),
@@ -168,3 +182,9 @@ class ProfileEditForm(forms.ModelForm):
             errors['password2'] = ValidationError('Ошибка, повторите пароль внимательнее!')
         if errors:
             raise ValidationError(errors)
+
+
+class ClientForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = '__all__'

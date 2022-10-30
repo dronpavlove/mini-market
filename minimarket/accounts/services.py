@@ -43,7 +43,12 @@ def initial_form_profile_new(request: HttpRequest) -> dict:
         'last_name': client.user.last_name,
         'email': client.user.email,
         'limit_items_views': client.limit_items_views,
-        'item_in_page_views': client.item_in_page_views
+        'item_in_page_views': client.item_in_page_views,
+        'city': client.city,
+        'street': client.street,
+        'house_number': client.house_number,
+        'apartment_number': client.apartment_number,
+        'postcode': client.postcode
     }
     return initial_client
 
@@ -52,43 +57,20 @@ def save_dop_parametrs(request: HttpRequest, form):  # noqa: C901
     """
     Функция сохраняет данные, которые были изменены на странице редактирования профиля
     """
-    client = Client.objects.select_related('user').prefetch_related('item_view').get(user=request.user)
+    client = Client.objects.select_related('user').prefetch_related('item_view').filter(user=request.user)
     # Если данные были изменены, то:
+    key_list = [key for key in form.cleaned_data]
     if form.has_changed():
-        # Список какие поля были изменены
-        change_data_list = form.changed_data
-        # Извлечем данные с формы
-        first_name = form.cleaned_data.get('first_name')
-        last_name = form.cleaned_data.get('last_name')
-        avatar = form.cleaned_data.get('photo')
-        phone = form.cleaned_data.get('phone')
-        email = form.cleaned_data.get('email')
-        patronymic = form.cleaned_data.get('patronymic')
-        password = form.cleaned_data.get('password1')
-        limit_items_views = form.cleaned_data.get('limit_items_views')
-        item_in_page_views = form.cleaned_data.get('item_in_page_views')
-
-        if 'first_name' in change_data_list:
-            client.user.first_name = first_name
-        if 'last_name' in change_data_list:
-            client.user.last_name = last_name
-        if 'photo' in change_data_list:
-            client.photo = avatar
-        if 'phone' in change_data_list:
-            client.phone = phone
-        if 'email' in change_data_list:
-            client.user.email = email
-        if 'patronymic' in change_data_list:
-            client.patronymic = patronymic
-        if 'password1' in change_data_list:
-            client.user.set_password(password)
-        if 'limit_items_views' in change_data_list:
-            client.limit_items_views = limit_items_views
-        if 'item_in_page_views' in change_data_list:
-            client.item_in_page_views = item_in_page_views
-
-        client.user.save()
-        client.save()
+        user = client[0].user
+        user_dict = {}
+        client_dict = {}
+        for key in key_list:
+            if key in user.__dict__:
+                user_dict[key] = form.cleaned_data.get(key)
+            elif key in client[0].__dict__:
+                client_dict[key] = form.cleaned_data.get(key)
+        User.objects.filter(id=request.user.id).update(**user_dict)
+        client.update(**client_dict)
 
 
 def add_product_in_history(user: object, product_pk: int):

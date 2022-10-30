@@ -8,6 +8,11 @@ from accounts.models import Client
 
 
 class BasketClient(models.Model):
+    STATUS_CHOICES = [
+        ('y', _('оплачен')),
+        ('ex', _('ожидает оплаты')),
+        ('n', _('неоплачен'))
+    ]
     product = models.ForeignKey(
         Product,
         on_delete=models.CASCADE,
@@ -36,6 +41,12 @@ class BasketClient(models.Model):
         max_length=256,
         verbose_name=_('Ключ сессии'),
         blank=True, null=True,
+    )
+    flag_paid = models.CharField(
+        max_length=2,
+        choices=STATUS_CHOICES,
+        default='n',
+        verbose_name=_('статус оплаты')
     )
     updated = models.DateTimeField(
         auto_now=True,

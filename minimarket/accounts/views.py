@@ -16,7 +16,7 @@ from django.views.generic import DetailView, ListView, FormView
 from basket.models import BasketClient
 
 from .forms import RegistrationForm, ProfileEditForm
-from .models import Client
+from .models import Client, Order
 from .services import (
     get_context_data_ajax,
     initial_form_profile_new,
@@ -89,9 +89,9 @@ class ProfileView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         if cache.get(self.request.user.username + '_shop') or self.request.user.is_superuser:
             context['user_shop'] = 'yes'
-        context['list_item_views'] = self.get_queryset().item_view.all().order_by('-client_products_views__id')[:3]
+        context['list_item_views'] = self.get_queryset().item_view.all().order_by('-client_products_views__id')[:10]
         context['products'] = context['list_item_views']
-        # context['order_last'] = self.get_queryset().orders.first()
+        context['order_last'] = Order.objects.filter(client_id=self.get_queryset().id)
         return context
 
 

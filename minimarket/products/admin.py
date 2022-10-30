@@ -93,7 +93,7 @@ class CategoryAdmin(admin.ModelAdmin):
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
     list_display = ("name", "article", "category_view", "price",
-                    "rating_view", "flag_limit", "property_count_view")
+                    "rating_view", "flag_limit", "property_count_view", "amount")
     list_display_links = ("name", "article")
     list_editable = ("price",)
 
@@ -109,7 +109,7 @@ class ProductAdmin(admin.ModelAdmin):
             "fields": ("name", "article", "category", "description", "tag")
         }),
         ("Склад", {
-            "fields": ("price", "flag_limit")
+            "fields": ("price", "amount", "flag_limit")
         }),
         ("Прочее", {
             "fields": ("rating",),

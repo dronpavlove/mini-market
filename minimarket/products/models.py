@@ -53,6 +53,7 @@ class Product(SoftDeletes):
     properties = models.ManyToManyField("Property", through="PropertyProduct",
                                         related_name="products", related_query_name="product",
                                         verbose_name=_("свойства товара"))
+    amount = models.IntegerField(default=1, verbose_name=_("количество в магазине"))
     tag = models.TextField(max_length=100, verbose_name=_('теги'), blank=True)
     tags = models.ManyToManyField('Tag', related_name='products')
 

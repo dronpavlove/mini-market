@@ -83,7 +83,8 @@ class ProfileView(LoginRequiredMixin, ListView):
         #     new_client = Client(user=self.request.user)
         #     new_client.save()
 
-        return Client.objects.select_related('user').prefetch_related('item_view').get(user=self.request.user)
+        return Client.objects.select_related('user').prefetch_related(
+            'item_view', 'client_order_view').get(user=self.request.user)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -91,7 +92,8 @@ class ProfileView(LoginRequiredMixin, ListView):
             context['user_shop'] = 'yes'
         context['list_item_views'] = self.get_queryset().item_view.all().order_by('-client_products_views__id')[:10]
         context['products'] = context['list_item_views']
-        context['order_last'] = Order.objects.filter(client_id=self.get_queryset().id)
+        # context['order_last'] = Order.objects.filter(client_id=self.get_queryset().id)
+        context['order_last'] = self.get_queryset().client_order_view.all()
         return context
 
 

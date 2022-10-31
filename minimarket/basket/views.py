@@ -1,6 +1,7 @@
 from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.db.models import F
+from django.shortcuts import render
 from fpdf import FPDF, HTMLMixin
 from datetime import datetime
 from basket.models import BasketClient
@@ -84,24 +85,25 @@ def basket_delete(request):
 def ordering(request):
 
     if request.user.is_authenticated:
-        text = '<h2>Ваш заказ: (черновик-набросок)</h2>\n'
+        text = str()
+        text_table = str()
         if Client.objects.filter(user=request.user).exists():
             client_basket = basket_client_info(request)
             client = client_basket['basket'][0].client
-            print('+++', client_basket['basket'][0].__dict__)
             check_num = client.user.username + '-' + str(datetime.now())
             for i in client_basket['basket']:
                 check_num += '-' + str(i.product.id)
-                num = 50 - len(i.product.name)
                 change_in_product_quantity(product_id=i.product.id, count=i.product_amount, product_in_basket=i)
-                text += f'<h3>{i.product.name}{"_" * num}{str(i.product_amount)} * ' \
-                        f'{str(i.product.price)} = {str(i.total_cost)}</h3>\n'
+                text_table += f'<tr>\n<th>{i.product.name}</th>\n' \
+                              f'<th>{str(i.product_amount)}</th>\n' \
+                              f'<th>{str(i.product.price)}</th>\n<th>{str(i.total_cost)}</th>\n</tr>\n'
             text += f'<h4>Общая сумма заказа: {client_basket["full_sum"]}</h4>\n' \
                     f'<h4>{client.user.username}</h4>\n' \
                     f'<h4>телефон: {client.phone}</h4>\n' \
                     f'<h4>Город:   {client.city}</h4>\n' \
                     f'<h4>ул. {client.street}, {client.house_number}, кв. {client.apartment_number}</h4>'
-            save_pdf_file(text=text, num=str(check_num))
+
+            new_text = save_pdf_file(text=text, text_table=text_table, num=str(check_num))
             check_data = {
                 'client': client,
                 'number_order': check_num,
@@ -110,10 +112,8 @@ def ordering(request):
             client_check = Order(**check_data)
             client_check.save()
 
-            return HttpResponse(text)
+            return HttpResponse(new_text)
         else:
-            # form = RegistrationForm()
-            # return render(request, 'accounts/registration.html', {'form': form})
             return HttpResponseRedirect("/accounts/profile/")
 
     else:
@@ -132,10 +132,16 @@ class MyFPDF(FPDF, HTMLMixin):
     pass
 
 
-def save_pdf_file(text: str, num: str):
+def save_pdf_file(text: str, text_table: str, num: str):
     num = num
     with open(f'media/check/check-{num}.html', 'a') as f:
         new_text = '<!DOCTYPE html>\n<html lang="en">\n<head>\n' \
-                   '<meta charset="UTF-8">\n<title>Чек</title>\n</head>\n<body>' \
-                   + text + '</body>\n</html>'
+                   '<meta charset="UTF-8">\n<title>Чек</title>\n</head>\n<body>\n' \
+                   '<h2>Ваш заказ: (черновик-набросок)</h2>\n' \
+                   '<table border="1">\n<tr>\n<th>Наименование товара</th>\n' \
+                   '<th>Количество</th>\n' \
+                   '<th>Цена</th>\n<th>Стоимость</th>\n</tr>' \
+                   + text_table + '</table>\n' \
+                   + text + '\n</body>\n</html>'
         f.write(new_text)
+    return new_text

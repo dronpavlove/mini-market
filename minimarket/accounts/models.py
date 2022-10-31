@@ -62,8 +62,6 @@ class Client(SoftDeletes):
                                              blank=True,
                                              )
 
-    # orders = models.ManyToManyField('Order', verbose_name=_('Заказы'), related_name='orders', blank=True)
-
     # Проверяем, не больше ли чем позволено
     def item_in_page_views_check(self):
         if self.item_in_page_views >= self.limit_items_views:
@@ -93,15 +91,6 @@ class ClientProductView(models.Model):
         verbose_name = 'просмотренный товар'
         verbose_name_plural = 'просмотренные товары'
         ordering = ("-created_dt",)
-
-
-# class ClientOrder(models.Model):
-#     client = models.ForeignKey('Client', on_delete=models.CASCADE,
-#                                related_name='client_order',
-#                                related_query_name='client_orders')
-#     order = models.ForeignKey('Order', on_delete=models.CASCADE,
-#                               related_name='client_order',
-#                               related_query_name='client_orders')
 
 
 class Order(SoftDeletes):

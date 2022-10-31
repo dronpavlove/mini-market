@@ -39,53 +39,54 @@
                 </div><a class="Account-editLink" href="{{ url('profile-edit', kwargs={'pk': request.user.pk }) }}">{{ _('Редактировать профиль') }}</a>
               </div>
             </div>
-              {%  if order_last %}<header class="Section-header">
-                <h2 class="Section-title">{{ _('История заказов') }}
-                </h2>
+              {%  if order_last %}
+              <header class="Section-header">
+                <h2 class="Section-title">{{ _('История заказов') }}</h2>
               </header>
-            {% for order in order_last %}
-            <div class="Account-group">
-              <div class="Account-column Account-column_full">
-                <div class="Order Order_anons">
-                    <div class="Order-personal">
-                    <div class="row">
-                      <div class="row-block"><a class="Order-title" href="{{ order.clients_check.url }}">{{ _('Заказ') }}&#32;<br><span class="Order-numberOrder">№{{ order.number_order }}</span>&#32;<br>{{ _('от') }}&#32;<span class="Order-dateOrder">{{ order.created_dt }}</span></a>
-                      </div>
-                      <div class="row-block">
-                        <div class="Order-info Order-info_delivery">
-                            {# Тут тоже когда будет доп инфа #}
-                          <div class="Order-infoType">{{ _('Тип доставки:') }}</div>
-                          <div class="Order-infoContent">{{ order.delivery }}</div>
-                        </div>
-                        <div class="Order-info Order-info_pay">
-                          <div class="Order-infoType">{{ _('Оплата:')}}</div>
-                            {% if order.status_pay == False %}
-                          <div class="Order-infoContent">{{ _('Ожидает подтверждение оплаты') }}</div>
-                            {% else %}
-                          <div class="Order-infoContent">{{ _('Оплата подтверждена') }}</div>
-                            {% endif %}
-                        </div>
 
+                <div class="Account-group">
+                  <div class="Account-column Account-column_full">
+                      {% for order in order_last %}
+                        <div class="Order Order_anons">
+                        <div class="Order-personal">
+                        <div class="row">
+                          <div class="row-block"><a class="Order-title" href="{{ order.clients_check.url }}">{{ _('Заказ') }}&#32;<br><span class="Order-numberOrder">№{{ order.number_order }}</span>&#32;<br>{{ _('от') }}&#32;<span class="Order-dateOrder">{{ order.created_dt }}</span></a>
+                          </div>
+                          <div class="row-block">
+                            <div class="Order-info Order-info_delivery">
+                                {# Тут тоже когда будет доп инфа #}
+                              <div class="Order-infoType">{{ _('Тип доставки:') }}</div>
+                              <div class="Order-infoContent">{{ order.delivery }}</div>
+                            </div>
+                            <div class="Order-info Order-info_pay">
+                              <div class="Order-infoType">{{ _('Оплата:')}}</div>
+                                {% if order.status_pay == False %}
+                              <div class="Order-infoContent">{{ _('Ожидает подтверждение оплаты') }}</div>
+                                {% else %}
+                              <div class="Order-infoContent">{{ _('Оплата подтверждена') }}</div>
+                                {% endif %}
+                            </div>
+
+                          </div>
+                        </div>
                       </div>
                     </div>
+                      {% endfor %}
                   </div>
-                </div>{% endfor %}
-              </div>
-            </div>
-          {% else %}
-            <header class="Section-header">
-          <h2 class="Section-title">{{ _('История Заказов') }}
-          </h2>
-        </header>
-            <div class="Cards Cards_account">
-                <h3 class="Middle-title Title_no_order" >{{ _('Заказов еще нет') }}</h3>
-            </div>
-          {% endif %}
+                </div>
+              {% else %}
+                <header class="Section-header">
+                  <h2 class="Section-title">{{ _('История Заказов') }}
+                  </h2>
+                </header>
+                <div class="Cards Cards_account">
+                    <h3 class="Middle-title Title_no_order" >{{ _('Заказов еще нет') }}</h3>
+                </div>
+              {% endif %}
             <div class="Account-group">
               <div class="Account-column Account-column_full">
                 <header class="Section-header">
-                  <h2 class="Section-title">{{ _('История просмотров') }}
-                  </h2>
+                  <h2 class="Section-title">{{ _('История просмотров') }}</h2>
                 </header>
               {%  if list_item_views %}
                 <div class="Cards Cards_account">
@@ -133,12 +134,12 @@
           </div>
 
         </div>
-          <div class="Account-editLink Account-editLink_view">
+        <div class="Account-editLink Account-editLink_view">
               <a href="{{ url('history_user', kwargs={'pk': client.pk }) }}">{{ _('Перейти на полный список') }}</a>
-          </div>
+        </div>
       </div>
     </div>
-  </div>
+</div>
 
 {# Jinja2 токен csrf_token #}
     <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">

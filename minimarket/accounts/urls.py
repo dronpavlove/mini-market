@@ -5,7 +5,7 @@ from django.views.generic import TemplateView
 
 from accounts import views
 from accounts.forms import PwdResetForm
-from accounts.views import ProfileView, ProfileEditView, HistoryUserView, LogView
+from accounts.views import ProfileView, ProfileEditView, HistoryUserView, LogView, HistoryOrdersView
 
 urlpatterns = [
     path('registration/', views.registration_view, name='registration'),
@@ -42,4 +42,5 @@ urlpatterns = [
     path('profile/', ProfileView.as_view(), name='profile'),
     path('profile/edit/<int:pk>', ProfileEditView.as_view(), name='profile-edit'),
     path('profile/history/<int:pk>', HistoryUserView.as_view(), name='history_user'),
+    path('profile/orders/', HistoryOrdersView.as_view(), name='history_orders'),
 ]

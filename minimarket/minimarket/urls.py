@@ -18,7 +18,10 @@ from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 
+from .views import start_page
+
 urlpatterns = [
+    path('', start_page),
     path('admin/', admin.site.urls),
     path("products/", include("products.urls")),
     path("basket/", include("basket.urls")),

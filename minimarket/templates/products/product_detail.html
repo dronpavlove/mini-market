@@ -44,18 +44,8 @@
                             <div class="ProductCard-info">
 
                               <div class="ProductCard-cost">
-                                {% if product_with_min_price %}
-                                  {% set prices = product_with_min_price.get_prices_with_promotion(promotion_service) %}
-                                  {% if prices.new_price %}
-                                    Цена от &nbsp;<div class="ProductCard-price">{{ prices.new_price }} &#8381;</div>
-                                  {% else %}
-                                    Цена от &nbsp;<div class="ProductCard-price">{{ prices.old_price }} &#8381;</div>
-                                  {% endif %}
-                                {% else %}
-                                  Нет в наличии
-                                {% endif %}
+                                  <div class="ProductCard-price">{{ product.price }} &#8381;</div>
                               </div>
-
                               <div class="ProductCard-compare">
                                 <a class="Card-change add-compare" data-product="{{ product.id }} "
                                    data-key="{{ request.session.session_key }}">
@@ -73,12 +63,13 @@
                         {% endif %}
 
                         <div class="ProductCard-cart">
-                            <div class="ProductCard-cartElement">
-                              <a class="btn btn_primary" href="#sellers-tab" onclick="$('#sellers-tab').click()">
-                                <img class="btn-icon" src="{{ static ('assets/img/icons/card/cart_white.svg') }}" alt="cart_white.svg"/>
-                                <span class="btn-content">{{ _('Добавить в корзину') }}</span>
+<!--                            <div class="ProductCard-cartElement">-->
+<!--                              <a class="btn btn_primary" href="#sellers-tab" onclick="$('#sellers-tab').click()">-->
+                              <a class="Card-btn add-button add-button-pulse" style="margin-left: 35px;" data-product_id="{{ product.id }}" data-action="add">
+                                <img class="btn btn_primary" src="{{ static ('assets/img/icons/card/cart_white.svg') }}" alt="cart_white.svg"/>
+<!--                                <span class="btn-content">{{ _('Добавить в корзину') }}</span>-->
                               </a>
-                            </div>
+<!--                            </div>-->
                         </div>
 
                         <div class="ProductCard-footer">

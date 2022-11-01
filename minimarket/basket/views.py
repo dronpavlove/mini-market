@@ -69,10 +69,10 @@ def basket_delete(request):
             update_data = {'client': request.user.client}
         except:
             update_data = {'session': request.session.session_key}
-        basket_item = BasketClient.objects.get(**update_data, product=product_id)
+        basket_item = BasketClient.objects.get(**update_data, product=product_id, flag_paid='n')
         basket_item.delete()
 
-        client_basket = BasketClient.objects.filter(**update_data)
+        client_basket = BasketClient.objects.filter(**update_data, flag_paid='n')
         count_product_in_basket = sum([i.product_amount for i in client_basket])
         full_sum = sum([i.total_cost for i in client_basket])
         response = JsonResponse({
@@ -89,7 +89,10 @@ def ordering(request):
         text_table = str()
         if Client.objects.filter(user=request.user).exists():
             client_basket = basket_client_info(request)
-            client = client_basket['basket'][0].client
+            try:
+                client = client_basket['basket'][0].client
+            except IndexError:
+                return HttpResponse('Корзина пуста')
             check_num = client.user.username + '-' + str(datetime.now())
             for i in client_basket['basket']:
                 check_num += '-' + str(i.product.id)

@@ -1,0 +1,94 @@
+{%  extends 'base_templates/base.html'  %}
+{% block title %}{{ _('История просмотров') }}{% endblock title %}
+{% block content %}
+
+  <div class="Middle Middle_top">
+    <div class="Middle-top">
+      <div class="wrap">
+        <div class="Middle-header">
+          <h1 class="Middle-title">{{ _('История заказов') }}
+          </h1>
+          <ul class="breadcrumbs Middle-breadcrumbs">
+            <li class="breadcrumbs-item"><a href="/products">{{ _('Домой') }}</a>
+            </li>
+            <li class="breadcrumbs-item breadcrumbs-item_current"><span>{{ _('История заказов') }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="Section Section_column Section_columnLeft">
+
+      <div class="wrap">
+          {# НАВИГАЦИЯ #}
+          {% include 'base_templates/navigation.html' %}
+          {# ============ #}
+        <div class="Section-content">
+            <div class="Account">
+            <div class="Account-group">
+              <div class="Account-column">
+                <div class="Account-avatar">
+                    {% if client.photo %}
+                    <img src="{{ client.photo.url }}" alt="{{ client.user.username }}"/>
+                    {% else %}
+                       <img src="{{ static('assets/img/icons/user_icon_no_ava.svg') }}" alt="user_icon.svg"/>
+                    {% endif %}
+                </div>
+              </div>
+              <div class="Account-column">
+                <div class="Account-name">
+                        {{ client.user.last_name }} {{ client.user.first_name }}  {{ client.patronymic }} <br>({{ client.user.username }})
+                </div><a class="Account-editLink" href="{{ url('profile-edit', kwargs={'pk': request.user.pk }) }}">{{ _('Редактировать профиль') }}</a>
+              </div>
+            </div>
+              {%  if orders %}
+              <header class="Section-header">
+                <h2 class="Section-title">{{ _('История заказов') }}</h2>
+              </header>
+
+                <div class="Account-group">
+                  <div class="Account-column Account-column_full">
+                      {% for order in orders %}
+                        <div class="Order Order_anons">
+                        <div class="Order-personal">
+                        <div class="row">
+                          <div class="row-block"><a class="Order-title" href="{{ order.clients_check.url }}">{{ _('Заказ') }}&#32;<br><span class="Order-numberOrder">№{{ order.number_order }}</span>&#32;<br>{{ _('от') }}&#32;<span class="Order-dateOrder">{{ order.created_dt }}</span></a>
+                          </div>
+                          <div class="row-block">
+                            <div class="Order-info Order-info_delivery">
+                                {# Тут тоже когда будет доп инфа #}
+                              <div class="Order-infoType">{{ _('Тип доставки:') }}</div>
+                              <div class="Order-infoContent">{{ order.delivery }}</div>
+                            </div>
+                            <div class="Order-info Order-info_pay">
+                              <div class="Order-infoType">{{ _('Оплата:')}}</div>
+                                {% if order.status_pay == False %}
+                              <div class="Order-infoContent">{{ _('Ожидает подтверждение оплаты') }}</div>
+                                {% else %}
+                              <div class="Order-infoContent">{{ _('Оплата подтверждена') }}</div>
+                                {% endif %}
+                            </div>
+
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                      {% endfor %}
+                  </div>
+                </div>
+              {% else %}
+                <header class="Section-header">
+                  <h2 class="Section-title">{{ _('История Заказов') }}
+                  </h2>
+                </header>
+                <div class="Cards Cards_account">
+                    <h3 class="Middle-title Title_no_order" >{{ _('Заказов еще нет') }}</h3>
+                </div>
+              {% endif %}
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{%  endblock %}

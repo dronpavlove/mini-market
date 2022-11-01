@@ -83,6 +83,11 @@
                     <h3 class="Middle-title Title_no_order" >{{ _('Заказов еще нет') }}</h3>
                 </div>
               {% endif %}
+
+              <div class="Account-editLink Account-editLink_view">
+                  <a href="{{ url('history_orders') }}">{{ _('Перейти на полный список заказов') }}</a>
+              </div>
+
             <div class="Account-group">
               <div class="Account-column Account-column_full">
                 <header class="Section-header">
@@ -131,12 +136,13 @@
               {% endif %}
               </div>
             </div>
+                <div class="Account-editLink Account-editLink_view">
+                  <a href="{{ url('history_user', kwargs={'pk': client.pk }) }}">{{ _('Перейти на полный список просмотренных товаров') }}</a>
+                </div>
           </div>
 
         </div>
-        <div class="Account-editLink Account-editLink_view">
-              <a href="{{ url('history_user', kwargs={'pk': client.pk }) }}">{{ _('Перейти на полный список') }}</a>
-        </div>
+
       </div>
     </div>
 </div>

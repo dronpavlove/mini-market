@@ -90,10 +90,12 @@ class ProfileView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         if cache.get(self.request.user.username + '_shop') or self.request.user.is_superuser:
             context['user_shop'] = 'yes'
-        context['list_item_views'] = self.get_queryset().item_view.all().order_by('-client_products_views__id')[:10]
+        num_limit = self.get_queryset().limit_items_views
+        context['list_item_views'] = self.get_queryset().item_view.all().order_by(
+            '-client_products_views__id')[:num_limit]
         context['products'] = context['list_item_views']
         # context['order_last'] = Order.objects.filter(client_id=self.get_queryset().id)
-        context['order_last'] = self.get_queryset().client_order_view.all()
+        context['order_last'] = self.get_queryset().client_order_view.all().order_by('-created_dt')[:3]
         return context
 
 
@@ -185,3 +187,23 @@ class LogView(LoginView):
                 item.session = None
                 item.save()
         return HttpResponseRedirect(self.get_success_url())
+
+
+class HistoryOrdersView(LoginRequiredMixin, ListView):
+    """
+    Класс вывода просмотренных товаров, пользователем
+    """
+
+    context_object_name = 'orders'
+    template_name = 'accounts/orders.html'
+    redirect_field_name = None
+
+    def get_queryset(self):
+        return Order.objects.select_related('client').filter(client=self.request.user.client)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['client'] = self.get_queryset()[0].client
+        if cache.get(self.request.user.username + '_shop') or self.request.user.is_superuser:
+            context['user_shop'] = 'yes'
+        return context

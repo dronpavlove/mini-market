@@ -5,7 +5,9 @@
     <div class="Middle-top">
       <div class="wrap">
         <div class="Middle-header">
-
+          {% if category %}
+          <h1 class="Middle-title">{{ category }}</h1>
+          {% endif %}
           <ul class="breadcrumbs Middle-breadcrumbs">
             <li class="breadcrumbs-item"><a href="/">{{ _('Главная') }}</a></li>
             <li class="breadcrumbs-item breadcrumbs-item_current"><span>{{ _('Каталог') }}</span></li>
@@ -16,21 +18,40 @@
     <div class="Section Section_column Section_columnLeft">
       <div class="wrap">
         <div class="Section-column">
+          {% if category %}
           <div class="Section-columnSection">
             <header class="Section-header">
               <strong class="Section-title">{{ _('Фильтр') }}</strong>
             </header>
             <div class="Section-columnContent">
               <form method="get">
-
+                  {{ filter.cache('category_filter:' + category.pk.__str__() + ':' + request.get_full_path(), 24 * 60 * 60) }}
                 <div class="buttons">
                   <input class="btn btn_square btn_dark btn_narrow" type="submit" value="{{ _('Фильтр') }}">
                 </div>
               </form>
             </div>
           </div>
-        </div>
+          {% elif categories %}
 
+          <div class="CategoriesButton-link">
+            {% for category in categories %}
+                  <a href="{{ url('products:product_list', kwargs={'pk': category.pk}) }}">
+                    <div class="CategoriesButton-icon">
+                        {% if category.icon_photo %}
+                          {% set img_src = category.icon_photo.url %}
+                        {% else %}
+                          {% set img_src = static('assets/img/icons/cart.svg') %}
+                        {% endif %}
+                        <img src="{{ img_src }}" alt="{{ category.category_name }}"/>
+                    </div>
+                    <span class="CategoriesButton-text">{{ category.category_name }}</span>
+                  </a>
+            {% endfor %}
+          </div>
+
+          {% endif %}
+        </div>
         {% include 'product_section.html' %}
       </div>
     </div>

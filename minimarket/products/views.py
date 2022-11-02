@@ -148,7 +148,7 @@ class BaseProductListView(ListView):  # DisplayedPaginatedPagesMixin,
 
     def get_queryset(self):
         products = self.model.objects.prefetch_related(
-            "product_photo"
+            "product_photo", "category"
         )
         if (order := self.sort_params["order_by"]) is not None:
             products = products.order_by(order)
@@ -159,6 +159,7 @@ class BaseProductListView(ListView):  # DisplayedPaginatedPagesMixin,
         ctx = super().get_context_data(object_list=object_list, **kwargs)
         # параметры сортировки
         ctx["sort_params"] = self.sort_params
+        ctx["categories"] = [i for i in Category.objects.all()]
         # пагинатор
         # ctx.update(self.get_paginated_range(ctx["page_obj"], ctx["paginator"]))
 
@@ -259,7 +260,7 @@ class CategoryProductListView(BaseProductListView):
         # формируем поля для filterset
         filterset_fields = {
             # Фильтр по имени товара
-            "product_name": CharFilter(label=_("Название товара"), field_name="product__name",
+            "product_name": CharFilter(label=_("Название товара"), field_name="name",
                                        lookup_expr="icontains",
                                        widget=CustomTextInput(attrs={
                                            "class": "form-input form-input_full",
@@ -282,7 +283,7 @@ class CategoryProductListView(BaseProductListView):
             # Добавляем фильтр для свойства товара
             filterset_fields[prop.alias] = ModelMultipleChoiceFilter(
                 label=prop.name,
-                field_name="product__product_property__value",
+                field_name="product_property__value",
                 to_field_name="value",
                 widget=CustomCheckboxSelectMultiple,
                 queryset=PropertyProduct.objects.filter(id__in=subquery).only("value").order_by("value")

@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 """
 
 from pathlib import Path
+
+from bot_logic.key import vk_body_data, vk_get_key, vk_group_id, vk_token, secret_key
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -21,17 +23,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/4.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-+d1)onogn28-@h1trg(ftr_whl$snz4=%$4#jxwqia5481%^ov'
+SECRET_KEY = secret_key
 
-VK_TOKEN = "vk1.a.DaBVppeyEPtbnHsryNp2GPsf8J_cvn35ZlpA7dn4gF9v6DajNrjXQvb08NBtuAFIRIMf0-" \
-           "X80VE9sZWREDfLGFIXZgXKJFgWEQucuDv9d6WKUAbQhljx2rpy7Ms4vmMc15w6fdhYkD1pbPYDxVK" \
-           "3HcknUNYztpIiKaQ4pnS6nJCYlhSNISqe-BeiuBpOxPH_"
+VK_TOKEN = vk_token
 
-VK_BODY_DATA = {"type": "confirmation", "group_id": 215851367}
+VK_BODY_DATA = vk_body_data
 
-VK_GET_KEY = '442d97c5'
+VK_GET_KEY = vk_get_key
 
-VK_GROUP_ID = '215851367'
+VK_GROUP_ID = vk_group_id
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True

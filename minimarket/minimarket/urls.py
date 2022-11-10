@@ -25,7 +25,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("products/", include("products.urls")),
     path("basket/", include("basket.urls")),
-    path("accounts/", include("accounts.urls"))
+    path("accounts/", include("accounts.urls")),
+    path('bot/', include('bot_logic.urls'))
 ]
 if settings.DEBUG:
     # static

@@ -23,6 +23,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-+d1)onogn28-@h1trg(ftr_whl$snz4=%$4#jxwqia5481%^ov'
 
+VK_TOKEN = "vk1.a.DaBVppeyEPtbnHsryNp2GPsf8J_cvn35ZlpA7dn4gF9v6DajNrjXQvb08NBtuAFIRIMf0-" \
+           "X80VE9sZWREDfLGFIXZgXKJFgWEQucuDv9d6WKUAbQhljx2rpy7Ms4vmMc15w6fdhYkD1pbPYDxVK" \
+           "3HcknUNYztpIiKaQ4pnS6nJCYlhSNISqe-BeiuBpOxPH_"
+
+VK_BODY_DATA = {"type": "confirmation", "group_id": 215851367}
+
+VK_GET_KEY = '442d97c5'
+
+VK_GROUP_ID = '215851367'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -41,7 +51,8 @@ INSTALLED_APPS = [
     'django_celery_results',
     'products.apps.ProductsConfig',
     'basket.apps.BasketConfig',
-    'accounts.apps.AccountsConfig'
+    'accounts.apps.AccountsConfig',
+    'bot_logic'
 ]
 
 MIDDLEWARE = [

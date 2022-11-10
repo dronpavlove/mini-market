@@ -1,7 +1,6 @@
 from datetime import datetime
 
 from django.core.cache import cache
-from django.contrib.auth.models import User
 from django.db import models
 from django.http import HttpRequest, JsonResponse, HttpResponse
 from django.shortcuts import render
@@ -9,13 +8,7 @@ from django.utils.translation import gettext as _
 from django.views import View
 from django.views.generic import DetailView, ListView
 from django_filters import ModelMultipleChoiceFilter, CharFilter, RangeFilter
-from django.conf import settings
 
-# from accounts.services import add_product_in_history, add_product_in_history_session
-# from promotions.models import Promotions, PromotionGroup
-# from promotions.utils.promo_filter import shop_product_filter, strategy_factory
-# from shops.models import ShopProduct
-# from utils.paginator import DisplayedPaginatedPagesMixin
 from accounts.models import ClientProductView
 from .filters import filterset_factory, CustomFilterSet, SearchProductFilter
 from .models import (Product, PropertyProduct, Category, Tag, UserReviews)
@@ -31,9 +24,11 @@ class ProductDetailView(DetailView):
     def get_context_data(self, **kwargs):
         """ Отдаёт содержание страницы при get запросе """
         try:
-            client = ClientProductView(client=self.request.user.client,
-                                       product=self.object)  # .objects.get(client=self.request.user.client)
-            client.save()
+            client = ClientProductView.objects.filter(client=self.request.user.client, product=self.object)
+            if not client.exists():
+                client = ClientProductView(client=self.request.user.client,
+                                           product=self.object)
+                client.save()
         except:
             pass
         context = super().get_context_data(**kwargs)
@@ -328,3 +323,22 @@ def lazy_load_reviews_views(request):
 
 def empty(request):
     return render(request, 'emptys/empty.html', {})
+
+
+def get_products_dict(category_id: int):
+    objects_dict = Product.objects.prefetch_related(
+            "product_photo"
+        ).filter(category_id=category_id)
+    data = [{
+        'name': i.name,
+        'description': i.description,
+        'photos': [
+            j.photo for j in i.product_photo.all()]
+    } for i in objects_dict]
+
+    return data
+
+
+def get_category_dict():
+    category_dict = {i.category_name: i.id for i in Category.objects.filter(activity=True)}
+    return category_dict

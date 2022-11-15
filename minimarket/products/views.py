@@ -328,15 +328,21 @@ def empty(request):
 def get_products_dict(category_id: int):
     objects_dict = Product.objects.prefetch_related(
             "product_photo"
-        ).filter(category_id=category_id)
-    data = [{
-        'name': i.name,
-        'description': i.description,
-        'photos': [
-            j.photo for j in i.product_photo.all()]
-    } for i in objects_dict]
+        ).filter(category_id=category_id)[:4]
+    data_list = []
+    for i in objects_dict:
+        if len(i.product_photo.all()) != 0:
+            data_list.append({'name': i.name,
+                              'article': i.article,
+                              'description': i.description,
+                              'photos': [str(j.photo) for j in i.product_photo.all()]})
+        else:
+            data_list.append({'name': i.name,
+                              'article': i.article,
+                              'description': i.description,
+                              'photos': ['none']})
 
-    return data
+    return data_list
 
 
 def get_category_dict():

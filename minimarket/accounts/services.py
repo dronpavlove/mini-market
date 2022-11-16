@@ -8,7 +8,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 
 from products.models import Product
-from .models import Client
+from .models import Client, Photo
 
 
 def send_client_email(user_id, domain, subject, template):
@@ -36,6 +36,7 @@ def initial_form_profile_new(request: HttpRequest) -> dict:
     """
     client = Client.objects.select_related('user').prefetch_related('item_view').get(user=request.user)
     initial_client = {
+        'photo': client.photo,
         'phone': client.phone,
         'patronymic': client.patronymic,
         'id_user': client.user.id,
@@ -58,16 +59,22 @@ def save_dop_parametrs(request: HttpRequest, form):  # noqa: C901
     Функция сохраняет данные, которые были изменены на странице редактирования профиля
     """
     client = Client.objects.select_related('user').prefetch_related('item_view').filter(user=request.user)
+    print(client[0].photo)
     # Если данные были изменены, то:
     key_list = [key for key in form.cleaned_data]
+    photo = Photo(photo=request.FILES['photo'])
+    photo.save()
     if form.has_changed():
         user = client[0].user
         user_dict = {}
         client_dict = {}
+
         for key in key_list:
             if key in user.__dict__:
                 user_dict[key] = form.cleaned_data.get(key)
             elif key in client[0].__dict__:
+                if key == 'photo':
+                    form.cleaned_data[key] = photo.photo
                 client_dict[key] = form.cleaned_data.get(key)
         User.objects.filter(id=request.user.id).update(**user_dict)
         client.update(**client_dict)

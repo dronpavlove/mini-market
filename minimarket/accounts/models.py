@@ -122,3 +122,7 @@ class Order(SoftDeletes):
         verbose_name_plural = _('заказы')
         db_table = 'Orders'
         ordering = ['-number_order']
+
+
+class Photo(models.Model):
+    photo = models.ImageField(_("фотография"), upload_to='accounts/', null=True, blank=True)

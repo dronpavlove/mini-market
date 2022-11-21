@@ -60,7 +60,7 @@ class SearchProductFilter(django_filters.FilterSet):
 
         filters = None
         for phrase in phrases:
-            filter_ = models.Q(product__name__icontains=phrase) | models.Q(product__description__icontains=phrase)
+            filter_ = models.Q(name__icontains=phrase[1:-1:]) | models.Q(description__icontains=phrase[1:-1:])
             if not filters:
                 filters = filter_
             else:

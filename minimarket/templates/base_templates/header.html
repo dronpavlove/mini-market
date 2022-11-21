@@ -45,7 +45,7 @@
                         {{ _('Личный кабинет') }} {{ request.user.username }}
                     </a>
                 {% else %}
-                    <a class="ControlPanel-title" href="#">
+                    <a class="ControlPanel-title" href="/accounts/login/">
                         {{ _('Вход') }}
                     </a>
                     |
@@ -147,7 +147,7 @@
         </div>
         <div class="Header-search">
           <div class="search">
-            <form class="form form_search" action="#" method="get">
+            <form class="form form_search" action="/products/search/" method="get">
               <input class="search-input" id="search" name="search" type="text" placeholder="{{ _('Что вы хотите найти') }} ..."/>
               <button class="search-button" type="submit" id="search-btn"><img src="{{ static('assets/img/icons/search.svg') }}" alt="search.svg"/>{{ _('Поиск') }}
               </button>

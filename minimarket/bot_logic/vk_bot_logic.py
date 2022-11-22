@@ -61,18 +61,9 @@ def get_product_objects(section: int):
 	full_products = cache.get_or_set('full_products', {})
 	if edit_timer() is True or section not in full_products:
 		update_data()
+		full_products = cache.get('full_products')
 	products = full_products[section]
 	return products
-
-
-def get_section_dict():
-	"""
-	Возвращает список разделов.
-	"""
-	sections = cache.get_or_set('sections', {})
-	if edit_timer() is True or len(sections) == 0:
-		update_data()
-	return sections
 
 
 def edit_timer(period=24):
@@ -124,7 +115,7 @@ def update_data(request=None):
 	или к глобальной переменной (для ускорения процесса)
 	"""
 	full_products = cache.get_or_set('full_products', {})
-	sections = cache.get_or_set('section', get_category_dict())
+	sections = get_category_dict()
 	for section_id in sections.values():
 		product_list = get_products_dict(section_id)
 		if section_id not in full_products:
@@ -153,4 +144,4 @@ def update_data(request=None):
 							old_product['attachment'] = send_photo(product['photos'][0])
 	cache.set('full_products', full_products)
 	cache.set('sections', sections)
-	return HttpResponse('Кэш обновился', status=200)
+	return HttpResponse('Кэш обновился' + str(cache.get('full_products')) + '\n' + str(cache.get('sections')), status=200)

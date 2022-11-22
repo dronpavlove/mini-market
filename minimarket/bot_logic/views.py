@@ -2,7 +2,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponse
 from django.conf import settings
 import json
-from vk_api.keyboard import VkKeyboard
+from vkbottle import Keyboard, Text
 
 from bot_logic.vk_bot_logic import send_message, button_response
 from products.views import get_category_dict
@@ -14,10 +14,16 @@ def index(request):
 		section_dict = get_category_dict()
 		data = json.loads(request.body.decode('utf-8'))
 		message_data = data['object']['message']
-		keyboard = VkKeyboard(one_time=False, inline=True)
+		keyboard = Keyboard(one_time=False, inline=True)
+		i = 0
 		for elem, value in section_dict.items():
-			keyboard.add_button(elem)
-		message_data['keyboard'] = keyboard.get_keyboard()
+			if i % 3 != 0:
+				keyboard.add(Text(elem))
+			else:
+				keyboard.row()
+				keyboard.add(Text(elem))
+			i += 1
+		message_data['keyboard'] = keyboard.get_json()
 		clean_text = message_data['text']
 		if data['type'] == 'confirmation':  # if VK server request confirmation
 			return settings.VK_GET_KEY

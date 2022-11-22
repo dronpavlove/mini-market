@@ -346,5 +346,8 @@ def get_products_dict(category_id: int):
 
 
 def get_category_dict():
-    category_dict = {i.category_name: i.id for i in Category.objects.filter(activity=True)}
+    category_dict = cache.get_or_set('sections', {})
+    if Category.objects.filter(activity=True).count() != len(category_dict):
+        category_dict = {i.category_name: i.id for i in Category.objects.filter(activity=True)}
+        cache.set('sections', category_dict)
     return category_dict

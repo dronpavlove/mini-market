@@ -186,7 +186,7 @@ class LogView(LoginView):
                 item.client = self.request.user.client
                 item.session = None
                 item.save()
-        return HttpResponseRedirect(self.get_success_url())
+        return HttpResponseRedirect('/')
 
 
 class HistoryOrdersView(LoginRequiredMixin, ListView):

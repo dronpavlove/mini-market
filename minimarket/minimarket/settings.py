@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 
 from bot_logic.key import vk_body_data, vk_get_key, vk_group_id, vk_token, secret_key
+from telegram_bot.key import tel_token
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -33,6 +34,9 @@ VK_GET_KEY = vk_get_key
 
 VK_GROUP_ID = vk_group_id
 
+TEL_TOKEN = tel_token
+TEL_PROXI = 'https://telegg.ru/orig/bot'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -52,7 +56,8 @@ INSTALLED_APPS = [
     'products.apps.ProductsConfig',
     'basket.apps.BasketConfig',
     'accounts.apps.AccountsConfig',
-    'bot_logic'
+    'bot_logic',
+    'telegram_bot'
 ]
 
 MIDDLEWARE = [

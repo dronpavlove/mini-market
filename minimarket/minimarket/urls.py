@@ -26,7 +26,8 @@ urlpatterns = [
     path("products/", include("products.urls")),
     path("basket/", include("basket.urls")),
     path("accounts/", include("accounts.urls")),
-    path('bot/', include('bot_logic.urls'))
+    path('bot/', include('bot_logic.urls')),
+    path('tel_bot/', include('telegram_bot.urls'))
 ]
 if settings.DEBUG:
     # static

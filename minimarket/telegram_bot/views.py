@@ -10,7 +10,7 @@ from telegram_bot.models import TelegramClient
 
 category_dict = {}
 category_product_dict = {}
-client_id_list = []
+client_id_dict = {}
 timer = 0
 
 
@@ -38,10 +38,8 @@ def do_eho(update: Update, context: CallbackContext, **kwargs):
 		'last_name': str(update.message.chat.last_name),
 		'type': update.message.chat.type
 	}
-	if not user_info['id'] in client_id_list:
-		client_id_list.append(user_info['id'])
-		if not TelegramClient.objects.filter(id=user_info['id']).exists():
-			TelegramClient.objects.create(**user_info)
+	if not user_info['id'] in client_id_dict:
+		client_id_dict[user_info['id']] = user_info
 
 	reply_markup = category_keyboard()  # category_callback(category_dict)
 	update.message.reply_text(
@@ -111,6 +109,9 @@ def update_category_product_dict(request):
 	category_dict = get_category_dict()
 	for category in category_dict:
 		category_product_dict[category] = get_products_dict(category_dict[category])
+	for key, value in client_id_dict.items():
+		if not TelegramClient.objects.filter(id=key).exists():
+			TelegramClient.objects.create(**value)
 	return HttpResponse(str(category_product_dict), status=200)
 
 

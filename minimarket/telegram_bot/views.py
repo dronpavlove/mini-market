@@ -42,9 +42,10 @@ def do_eho(update: Update, context: CallbackContext, **kwargs):
 		client_id_dict[user_info['id']] = user_info
 
 	reply_markup = category_keyboard()  # category_callback(category_dict)
-	update.message.reply_text(
-		text=reply_text, parse_mode='HTML', reply_markup=reply_markup
-	)
+	for text in reply_text:
+		update.message.reply_text(
+			text=text, parse_mode='HTML', reply_markup=reply_markup
+		)
 
 
 def get_product_html_info(text: str):
@@ -57,11 +58,14 @@ def get_product_html_info(text: str):
 			               f'<i>{product["description"]}</i>\n' \
 			               f'<a href="https://benefittime.ru/media/{product["photos"][0]}">' \
 			               f'фото {product["photos"][0]}</a>\n\n'
-			reply_text += text_to_html
+			yield text_to_html
 	else:
-		reply_text = '<b>Нет такой категории\n' + text + '</b>'
+		reply_text = '<b>Видимо нет такой категории</b>\n' + text +\
+		             '<b>Представляю Вашему вниманию витрину магазина Benefittime.ru</b>\n' \
+		             '<b>Выберете интересующую ктегорию на клавиатуре</b>\n' \
+		             '<a href="https://benefittime.ru/">Перейти на сайт</a>'
 
-	return reply_text
+		yield reply_text
 
 
 def category_callback():

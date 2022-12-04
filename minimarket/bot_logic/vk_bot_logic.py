@@ -38,6 +38,10 @@ def send_message(**kwargs):
 	vk.messages.send(**post)
 
 
+def group_msg(group_id, text, keyboard):
+	vk.messages.send(group_id=group_id, message=text, keyboard=keyboard)
+
+
 def button_response(section_id: int):
 	"""
 	В зависимости от выбранной категории (по нажатию кнопки)

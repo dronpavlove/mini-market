@@ -4,7 +4,7 @@ from django.conf import settings
 import json
 from vkbottle import Keyboard, Text
 
-from bot_logic.vk_bot_logic import send_message, button_response
+from bot_logic.vk_bot_logic import send_message, button_response, group_msg
 from products.views import get_category_dict
 
 
@@ -43,7 +43,11 @@ def index(request):
 
 				return HttpResponse('ok', content_type="text/plain", status=200)
 			else:
-				send_message(event=message_data, message=f'Ответ на простое сообщение, не на кнопку... \n {clean_text}')
+				start_text = f'Представляю Вашему вниманию витрину магазина Benefittime.ru' \
+				             f'\nВыберете интересующую ктегорию на клавиатуре' \
+				             f'\nОтвет отправлю в личные сообщения' \
+				             f'\nПерейти на сайт: https://benefittime.ru/'
+				group_msg(group_id=215851367, text=start_text, keyboard=message_data['keyboard'])
 				return HttpResponse('ok', content_type="text/plain", status=200)
 	else:
 		return HttpResponse('see you :)')

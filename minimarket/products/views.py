@@ -9,6 +9,8 @@ from django.views import View
 from django.views.generic import DetailView, ListView
 from django_filters import ModelMultipleChoiceFilter, CharFilter, RangeFilter
 
+import json
+
 from accounts.models import ClientProductView
 from .filters import filterset_factory, CustomFilterSet, SearchProductFilter
 from .models import (Product, PropertyProduct, Category, Tag, UserReviews)
@@ -351,3 +353,13 @@ def get_category_dict():
         category_dict = {i.category_name: i.id for i in Category.objects.filter(activity=True)}
         cache.set('sections', category_dict)
     return category_dict
+
+
+def get_json_obj(request):
+    data = get_category_dict()
+    dict_for_telegram = cache.get_or_set('for_telegram', {})
+    for key, value in data.items():
+        dict_for_telegram[key] = [product for product in get_products_dict(value)]
+        dict_for_telegram[key].append({'category_pk': value})
+        cache.set('for_telegram', dict_for_telegram)
+    return HttpResponse(json.dumps(dict_for_telegram))

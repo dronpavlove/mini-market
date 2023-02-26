@@ -1,6 +1,6 @@
 from typing import Optional
 
-import autocomplete_all
+# import autocomplete_all
 from django.contrib import admin
 from django.contrib.admin import TabularInline
 from django.db.models import QuerySet
@@ -15,7 +15,7 @@ from .models import Category, Product, Property, PropertyProduct, PropertyCatego
 
 
 # inlines
-class PropertyProductInline(autocomplete_all.TabularInline):
+class PropertyProductInline(TabularInline):
     model = PropertyProduct
     extra = 0
 
@@ -164,7 +164,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 @admin.register(Property)
-class PropertyAdmin(autocomplete_all.ModelAdmin):
+class PropertyAdmin(admin.ModelAdmin):
     list_display = ("name", "alias", "tooltip_view")
     list_display_links = ("name",)
 

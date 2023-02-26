@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
+from django.views.static import serve as mediaserve
 
 from .views import start_page
 
@@ -27,10 +28,26 @@ urlpatterns = [
     path("basket/", include("basket.urls")),
     path("accounts/", include("accounts.urls")),
     path('bot/', include('bot_logic.urls')),
-    path('tel_bot/', include('telegram_bot.urls'))
 ]
 if settings.DEBUG:
     # static
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-    # media
+#     # media
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# if settings.DEBUG:
+#     import debug_toolbar
+ 
+#     urlpatterns = [
+#         path('__debug__/', include(debug_toolbar.urls)),
+#     ] + urlpatterns
+ 
+#     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+ 
+# else:
+#     urlpatterns += [
+#         path(f'^{settings.MEDIA_URL.lstrip("/")}(?P<path>.*)$',
+#             mediaserve, {'document_root': settings.MEDIA_ROOT}),
+#         path(f'^{settings.STATIC_URL.lstrip("/")}(?P<path>.*)$',
+#             mediaserve, {'document_root': settings.STATIC_ROOT}),
+#     ]
+    

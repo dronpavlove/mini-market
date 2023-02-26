@@ -35,7 +35,7 @@ class Category(models.Model):
         return self.category_name
 
 
-class Product(SoftDeletes):
+class Product(models.Model):
     """
     Товар.
     """
@@ -202,7 +202,7 @@ class ProductPhoto(models.Model):
         verbose_name_plural = _('фото товаров')
 
 
-class UserReviews(SoftDeletes):
+class UserReviews(models.Model):
     """
     Модель добавления комментария к товару
     """

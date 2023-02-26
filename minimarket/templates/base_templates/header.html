@@ -49,7 +49,7 @@
                         {{ _('Вход') }}
                     </a>
                     |
-                    <a class="ControlPanel-title" href="#">
+                    <a class="ControlPanel-title" href="/accounts/registration/">
                         {{ _('регистрация') }}
                     </a>
                 {% endif %}
@@ -71,7 +71,7 @@
     </div>
     <div class="wrap">
       <div class="row Header-rowMain">
-        <div class="row-block Header-logo"><a class="logo" href="/"><img class="logo-image" src="{{ static('assets/img/logo.png') }}" alt="logo.png"/></a>
+        <div class="row-block Header-logo"><a class="logo" href="/"><img class="logo-image" src="{{ static('assets/img/logo2.png') }}" alt="logo2.png"/></a>
         </div>
         <nav class="row-block row-block_right Header-menu">
           <div class="menuModal" id="navigate">
@@ -114,10 +114,10 @@
       </div>
     </div>
 
-    <div class="Header-searchWrap">
+    <div class="Header-searchWrap" style="background-color: #3CB371">
       <div class="wrap">
         <div class="Header-categories">
-          <div class="CategoriesButton">
+          <div class="CategoriesButton" style="background-color: #CD5C5C">
             <div class="CategoriesButton-title">
               <div class="CategoriesButton-icon"><img src="{{ static('assets/img/icons/allDep.svg') }}" alt="allDep.svg"/>
               </div><span class="CategoriesButton-text">{{ _('Все категории') }}</span>
@@ -143,13 +143,13 @@
             </div>
           </div>
         </div>
-        <div class="Header-searchLink"><img src="{{ static('assets/img/icons/search.svg') }}" alt="search.svg"/>
+        <div class="Header-searchLink" style="background-color: #CD5C5C"><img src="{{ static('assets/img/icons/search.svg') }}" alt="search.svg"/>
         </div>
         <div class="Header-search">
           <div class="search">
-            <form class="form form_search" action="/products/search/" method="get">
+            <form class="form form_search"action="/products/search/" method="get">
               <input class="search-input" id="search" name="search" type="text" placeholder="{{ _('Что вы хотите найти') }} ..."/>
-              <button class="search-button" type="submit" id="search-btn"><img src="{{ static('assets/img/icons/search.svg') }}" alt="search.svg"/>{{ _('Поиск') }}
+              <button class="search-button"  style="background-color: #CD5C5C" type="submit" id="search-btn"><img src="{{ static('assets/img/icons/search.svg') }}" style="background-color: #CD5C5C" alt="search.svg"/>{{ _('Поиск') }}
               </button>
             </form>
           </div>

@@ -4,7 +4,7 @@ from django.conf import settings
 import json
 from vkbottle import Keyboard, Text
 
-from bot_logic.vk_bot_logic import send_message, button_response, group_msg
+from bot_logic.vk_bot_logic import send_message, button_response
 from products.views import get_category_dict
 
 
@@ -33,21 +33,21 @@ def index(request):
 			if clean_text in section_dict:
 				category_id = section_dict[clean_text]
 				send_message(
-					message=f'Запрос принят. Минуточку... Сейчас обрабатывается запрос {clean_text}: id={category_id}',
+					message=f'Запрос принят. Минуточку... Сейчас обрабатывается запрос {clean_text}.',
 					event=message_data, keyboard=False
 				)
 				for i in button_response(category_id):
-					send_message(message=i['message'], event=message_data, attachment=i['attachment'], keyboard='None')
+					send_message(message=i['message'] + ' ссылка на сайт: https://benefittime.ru/', event=message_data, attachment=i['attachment'], keyboard='None')
 
 				send_message(message='Продолжим...', event=message_data)
 
 				return HttpResponse('ok', content_type="text/plain", status=200)
 			else:
-				start_text = f'Представляю Вашему вниманию витрину магазина Benefittime.ru' \
-				             f'\nВыберете интересующую ктегорию на клавиатуре' \
-				             f'\nОтвет отправлю в личные сообщения' \
-				             f'\nПерейти на сайт: https://benefittime.ru/'
-				group_msg(group_id=215851367, text=start_text, keyboard=message_data['keyboard'])
+				# message_data['event']['from_id'] = '215851367'
+				send_message(event=message_data, message=f'Представляю Вашему вниманию витрину магазина Benefittime.ru'
+				                                         f'\nВыберете интересующую ктегорию на клавиатуре'
+				                                         f'\nОтвет отправлю в личные сообщения'
+				                                         f'\nПерейти на сайт: https://benefittime.ru/')
 				return HttpResponse('ok', content_type="text/plain", status=200)
 	else:
 		return HttpResponse('see you :)')

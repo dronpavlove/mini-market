@@ -27,7 +27,8 @@ def send_message(**kwargs):
 		'keyboard': kwargs['event']['keyboard'],
 		'random_id': 0,
 		'peer_id': kwargs['event']['from_id'],
-		'message': kwargs['message']
+		'message': kwargs['message'],
+        "buttons":[],"one_time":True
 	}
 	for element in kwargs:
 		if element == 'attachment':
@@ -39,7 +40,7 @@ def send_message(**kwargs):
 
 
 def group_msg(group_id, text, keyboard):
-	vk.messages.send(group_id=group_id, message=text, keyboard=keyboard)
+	vk.messages.send(peer_id=group_id, message=text, keyboard=keyboard, random_id=0)
 
 
 def button_response(section_id: int):
@@ -65,7 +66,7 @@ def get_product_objects(section: int):
 	full_products = cache.get_or_set('full_products', {})
 	if edit_timer() is True or section not in full_products:
 		update_data()
-		full_products = cache.get('full_products')
+# 		full_products = cache.get('full_products')
 	products = full_products[section]
 	return products
 
@@ -105,6 +106,7 @@ def send_photo(url):
 		if not photo:
 			photo = upload.photo_messages(str(Path(settings.MEDIA_ROOT, 'defolt.png')))
 			cache.set('default_photo', photo)
+
 	owner_id = photo[0]['owner_id']
 	photo_id = photo[0]['id']
 	access_key = photo[0]['access_key']
@@ -125,7 +127,7 @@ def update_data(request=None):
 		if section_id not in full_products:
 			products = [{
 				'name': i['name'], 'article': i['article'], 'description': i['description'], 'photo': i['photos'][0],
-				'attachment': send_photo(i['photos'][0])
+				'attachment': send_photo(i['photos'][0]) # str(Path(settings.MEDIA_ROOT, i['photos'][0]))
 			} for i in product_list]
 			full_products[section_id] = products
 		else:

@@ -36,16 +36,17 @@ def registration_view(request):
     if request.method == 'POST':
         form = RegistrationForm(request.POST)
         if form.is_valid():
-            user = form.save(commit=False)
-            user.is_active = False
+            user = form.save(commit=True)  # False)
+            user.is_active = True  # False
             user.save()
+            Client.objects.create(user=user)
             current_site = get_current_site(request)
-            send_client_email_task.delay(
-                user_id=user.id,
-                site=current_site.domain,
-                subject='Активация аккаунта',
-                template='account_activation'
-            )
+            # send_client_email_task.delay(
+            #     user_id=user.id,
+            #     site=current_site.domain,
+            #     subject='Активация аккаунта',
+            #     template='account_activation'
+            # )
             return render(request, 'accounts/registration_confirm.html')
     else:
         form = RegistrationForm()
@@ -186,7 +187,7 @@ class LogView(LoginView):
                 item.client = self.request.user.client
                 item.session = None
                 item.save()
-        return HttpResponseRedirect('/')
+        return HttpResponseRedirect('/')  # self.get_success_url())
 
 
 class HistoryOrdersView(LoginRequiredMixin, ListView):
@@ -203,7 +204,10 @@ class HistoryOrdersView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['client'] = self.get_queryset()[0].client
+        try:
+            context['client'] = self.get_queryset()[0].client
+        except:
+            context['client'] = self.request.user.client
         if cache.get(self.request.user.username + '_shop') or self.request.user.is_superuser:
             context['user_shop'] = 'yes'
         return context

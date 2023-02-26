@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/4.0/ref/settings/
 from pathlib import Path
 
 from bot_logic.key import vk_body_data, vk_get_key, vk_group_id, vk_token, secret_key
-from telegram_bot.key import tel_token
 import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -34,7 +33,6 @@ VK_GET_KEY = vk_get_key
 
 VK_GROUP_ID = vk_group_id
 
-TEL_TOKEN = tel_token
 TEL_PROXI = 'https://telegg.ru/orig/bot'
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -52,12 +50,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'django_celery_results',
+    # 'django_celery_results',
     'products.apps.ProductsConfig',
     'basket.apps.BasketConfig',
     'accounts.apps.AccountsConfig',
     'bot_logic',
-    'telegram_bot'
 ]
 
 MIDDLEWARE = [
@@ -157,17 +154,19 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / "static",
+    BASE_DIR / 'static',
 ]
 
 MEDIA_URL = "media/"
 
-MEDIA_ROOT = BASE_DIR / "media"
+MEDIA_ROOT = BASE_DIR / 'media/'
+# STATIC_ROOT = BASE_DIR / 'static/'
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+LOGOUT_REDIRECT_URL = "/"
 
 REDIS_HOST = '127.0.0.1'
 REDIS_PORT = '6379'
@@ -181,9 +180,11 @@ CELERY_CACHE_BACKEND = 'default'
 
 # django setting.
 CACHES = {
-    "default": {
-        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
-    },
+    'default': {
+		'BACKEND': 'django.core.cache.backends.db.DatabaseCache',
+		'LOCATION': 'minimarket_cache',
+		'TIMEOUT': None,
+	},
     "redis": {
         "BACKEND": "django_redis.cache.RedisCache",
         "LOCATION": f"redis://{REDIS_HOST}:{REDIS_PORT}/0",

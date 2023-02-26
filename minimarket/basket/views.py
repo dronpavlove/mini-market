@@ -2,7 +2,9 @@ from django.http import JsonResponse, HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, get_object_or_404
 from django.db.models import F
 from django.shortcuts import render
-from fpdf import FPDF, HTMLMixin
+from django.conf import settings
+from pathlib import Path
+# from fpdf import FPDF, HTMLMixin
 from datetime import datetime
 from basket.models import BasketClient
 from accounts.models import Client, Order
@@ -131,13 +133,14 @@ def change_in_product_quantity(product_id: int, count: int, product_in_basket):
     product_in_basket.save()
 
 
-class MyFPDF(FPDF, HTMLMixin):
-    pass
+# class MyFPDF(FPDF, HTMLMixin):
+#     pass
 
 
 def save_pdf_file(text: str, text_table: str, num: str):
     num = num
-    with open(f'media/check/check-{num}.html', 'a') as f:
+    file_url = str(Path(settings.MEDIA_ROOT, f'check/check-{num}.html'))
+    with open(file_url, 'a') as f:
         new_text = '<!DOCTYPE html>\n<html lang="en">\n<head>\n' \
                    '<meta charset="UTF-8">\n<title>Чек</title>\n</head>\n<body>\n' \
                    '<h2>Ваш заказ: (черновик-набросок)</h2>\n' \

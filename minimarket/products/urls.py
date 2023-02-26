@@ -27,4 +27,5 @@ urlpatterns = [
     # path("sale_group/<int:pk>/", views.PromotionGroupProductListView.as_view(), name="product_sale_group"),
     path("search/", views.SearchedProductListView.as_view(), name="product_search"),
     path('empty/', views.empty, name='empty'),
+    path('product_dict', views.get_json_obj),
 ]

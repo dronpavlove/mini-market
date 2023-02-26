@@ -2223,7 +2223,7 @@ label.toggle {
 }
 .search .form_search {
   display: flex;
-  background-color: #fff;
+  background-color: #CD5C5C;
   border-radius: 100px;
   justify-content: space-between;
 }

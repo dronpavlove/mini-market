@@ -141,7 +141,7 @@ class PropertyProduct(models.Model):
         )
 
     def __str__(self):
-        return f"{self.value}"
+        return f"{self.value}: {self.value.name}"
 
 
 class PropertyCategory(models.Model):
@@ -200,6 +200,9 @@ class ProductPhoto(models.Model):
     class Meta:
         verbose_name = _('фото товара')
         verbose_name_plural = _('фото товаров')
+
+    def __str__(self):
+        return f"{self.photo.url}"
 
 
 class UserReviews(models.Model):

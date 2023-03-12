@@ -51,10 +51,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     # 'django_celery_results',
+    'rest_framework',
+    'django.contrib.admindocs',
     'products.apps.ProductsConfig',
     'basket.apps.BasketConfig',
     'accounts.apps.AccountsConfig',
     'bot_logic',
+    'site_api',
+    'drf_yasg',
+
 ]
 
 MIDDLEWARE = [

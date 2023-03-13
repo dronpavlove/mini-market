@@ -38,7 +38,7 @@ TEL_PROXI = 'https://telegg.ru/orig/bot'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['http://my_site_name', '127.0.0.1']
 
 
 # Application definition

@@ -2,9 +2,10 @@ import re
 
 from django.contrib.auth.models import User
 from django.core.validators import FileExtensionValidator, MinValueValidator, RegexValidator
-from django.db import models
+# from django.db import models
 from django.utils.translation import gettext_lazy as _
 from timestamps.models import models, SoftDeletes
+from minimarket.settings import ALLOWED_HOSTS
 
 
 class Category(models.Model):
@@ -202,7 +203,7 @@ class ProductPhoto(models.Model):
         verbose_name_plural = _('фото товаров')
 
     def __str__(self):
-        return f"{self.photo.url}"
+        return f"{ALLOWED_HOSTS[0]}{self.photo.url}"
 
 
 class UserReviews(models.Model):
